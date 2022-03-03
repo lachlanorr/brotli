@@ -2,10 +2,11 @@
 # several CI services, such as Travis and Drone, use it.  Solaris 11
 # has 2.8.6, and it's not difficult to support if you already have to
 # support 2.8.7.
-cmake_minimum_required(VERSION 2.8.6)
+cmake_minimum_required(VERSION 3.22.0)
 
 project(brotli C)
 
+if(NOT gaen_MINEXT)
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to Release as none was specified.")
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
@@ -25,6 +26,7 @@ if (BROTLI_EMSCRIPTEN)
 else()
   message("-- Compiler is not EMSCRIPTEN")
 endif()
+endif() # gaen_MINEXT
 
 # If Brotli is being bundled in another project, we don't want to
 # install anything.  However, we want to let people override this, so
