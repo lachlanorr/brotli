@@ -107,16 +107,22 @@ if(BROTLI_EMSCRIPTEN)
 endif()
 
 file(GLOB_RECURSE BROTLI_COMMON_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} c/common/*.c)
-add_library(brotlicommon ${BROTLI_COMMON_SOURCES})
+add_library(brotlicommon-static STATIC ${BROTLI_COMMON_SOURCES})
 
 file(GLOB_RECURSE BROTLI_DEC_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} c/dec/*.c)
-add_library(brotlidec ${BROTLI_DEC_SOURCES})
+add_library(brotlidec-static STATIC ${BROTLI_DEC_SOURCES})
 
 file(GLOB_RECURSE BROTLI_ENC_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} c/enc/*.c)
-add_library(brotlienc ${BROTLI_ENC_SOURCES})
+add_library(brotlienc-static STATIC ${BROTLI_ENC_SOURCES})
 
 # Older CMake versions does not understand INCLUDE_DIRECTORIES property.
 include_directories(${BROTLI_INCLUDE_DIRS})
+
+if(gaen_MINEXT)
+  target_include_directories(brotlicommon-static SYSTEM INTERFACE ${BROTLI_INCLUDE_DIRS})
+  target_include_directories(brotlidec-static SYSTEM INTERFACE ${BROTLI_INCLUDE_DIRS})
+  target_include_directories(brotlienc-static SYSTEM INTERFACE ${BROTLI_INCLUDE_DIRS})
+else() # gaen_MINEXT
 
 if(BUILD_SHARED_LIBS)
   foreach(lib ${BROTLI_LIBRARIES_CORE})
@@ -266,6 +272,7 @@ if(NOT BROTLI_DISABLE_TESTS AND BROTLI_BUILD_TOOLS)
         -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/run-compatibility-test.cmake)
   endforeach()
 endif()  # BROTLI_DISABLE_TESTS
+endif() #gaen_MINEXT
 
 # Generate a pkg-config files
 
