@@ -10,9 +10,10 @@
 
 #include <string.h>  /* memcpy, memset */
 
+#include <brotli/types.h>
+
 #include "../common/constants.h"
 #include "../common/platform.h"
-#include <brotli/types.h>
 #include "command.h"
 #include "compound_dictionary.h"
 #include "encoder_dict.h"
@@ -433,6 +434,8 @@ static size_t UpdateNodes(
   size_t k;
   const CompoundDictionary* addon = &params->dictionary.compound;
   size_t gap = addon->total_size;
+
+  BROTLI_DCHECK(cur_ix_masked + max_length <= ringbuffer_mask);
 
   EvaluateNode(block_start + stream_offset, pos, max_backward_limit, gap,
       starting_dist_cache, model, queue, nodes);
